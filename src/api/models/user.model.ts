@@ -1,5 +1,7 @@
-export {};
 import { NextFunction, Request, Response, Router } from 'express';
+import { transformData, listData } from 'api/utils/ModelUtils';
+
+export {};
 const mongoose = require('mongoose');
 const httpStatus = require('http-status');
 const bcrypt = require('bcryptjs');
@@ -7,7 +9,6 @@ const moment = require('moment-timezone');
 const jwt = require('jwt-simple');
 const uuidv4 = require('uuid/v4');
 const APIError = require('api/utils/APIError');
-import { transformData, listData } from 'api/utils/ModelUtils';
 const { env, JWT_SECRET, JWT_EXPIRATION_MINUTES } = require('config/vars');
 
 /**
@@ -75,7 +76,7 @@ const userSchema = new mongoose.Schema(
       trim: true
     },
     cardId: {
-      type: mongoose.Types.Schema.ObjectId,
+      type: mongoose.Schema.Types.ObjectId,
       ref: 'Card'
     }
   },

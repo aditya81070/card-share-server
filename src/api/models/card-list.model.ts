@@ -23,11 +23,11 @@ const roles = ['user', 'admin'];
 const cardList = new mongoose.Schema(
   {
     userId: {
-      type: mongoose.Types.Schema.ObjectId,
+      type: mongoose.Schema.Types.ObjectId,
       ref: 'User'
     },
     contact: {
-      type: [mongoose.Types.Schema.ObjectId],
+      type: [mongoose.Schema.Types.ObjectId],
       ref: 'Card'
     }
   },
