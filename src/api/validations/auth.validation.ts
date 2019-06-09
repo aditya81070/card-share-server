@@ -11,16 +11,24 @@ module.exports = {
       password: Joi.string()
         .required()
         .min(6)
-        .max(128)
+        .max(128),
+      name: Joi.string().max(128),
+      username: Joi.string()
+        .alphanum()
+        .min(3)
+        .max(30)
+        .required()
     }
   },
 
   // POST /v1/auth/login
   login: {
     body: {
-      email: Joi.string()
-        .email()
-        .required(),
+      username: Joi.string()
+        .alphanum()
+        .min(3)
+        .max(30),
+      email: Joi.string().email(),
       password: Joi.string()
         .required()
         .max(128)
@@ -48,9 +56,11 @@ module.exports = {
   // POST /v1/auth/forgot-password
   forgotPassword: {
     body: {
-      email: Joi.string()
-        .email()
-        .required()
+      username: Joi.string()
+        .alphanum()
+        .min(3)
+        .max(30),
+      email: Joi.string().email()
     }
   }
 };

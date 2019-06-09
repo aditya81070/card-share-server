@@ -77,14 +77,15 @@ const userSchema = new mongoose.Schema(
     },
     cardId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Card'
+      ref: 'Card',
+      default: null
     }
   },
   {
     timestamps: true
   }
 );
-const ALLOWED_FIELDS = ['id', 'name', 'email', 'username', 'contact', 'picture', 'role', 'createdAt'];
+const ALLOWED_FIELDS = ['id', 'name', 'email', 'username', 'contact', 'picture', 'role', 'cardId', 'createdAt'];
 
 /**
  * Add your

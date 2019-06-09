@@ -1,13 +1,16 @@
-export {};
 import { User, UserNote } from 'api/models';
+
+export {};
 
 const ADMIN_USER_1 = {
   email: 'admin1@example.com',
+  username: 'admin1',
   role: 'admin',
   password: '1admin1'
 };
 const ADMIN_USER_2 = {
   email: 'admin2@example.com',
+  username: 'admin2',
   role: 'admin',
   password: '2admin2'
 };
