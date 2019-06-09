@@ -23,12 +23,9 @@ if (env === 'development') {
  * @public
  */
 exports.connect = () => {
-  mongoose.connect(
-    mongo.uri,
-    {
-      keepAlive: 1,
-      useNewUrlParser: true
-    }
-  );
+  mongoose.connect(mongo.uri, {
+    keepAlive: 1,
+    useNewUrlParser: true
+  });
   return mongoose.connection;
 };
