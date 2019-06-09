@@ -36,7 +36,8 @@
     "docker:start": "cross-env NODE_ENV=production forever start -a --uid 'node-rem' -v -c ts-node src/index.ts",
     "docker:prod": "docker-compose -f docker-compose.yml -f docker-compose.prod.yml up",
     "docker:dev": "docker-compose -f docker-compose.yml -f docker-compose.dev.yml up",
-    "docker:test": "docker-compose -f docker-compose.yml -f docker-compose.test.yml up --abort-on-container-exit"
+    "docker:test": "docker-compose -f docker-compose.yml -f docker-compose.test.yml up --abort-on-container-exit",
+    "prettier": "prettier --config ./.prettierrc --write \"src/**/*.ts\""
   },
   "repository": {
     "type": "git",
@@ -110,6 +111,7 @@
     "passport": "^0.4.0",
     "passport-http-bearer": "^1.0.1",
     "passport-jwt": "4.0.0",
+    "prettier": "^1.18.2",
     "socket.io": "^2.2.0",
     "spdy": "^4.0.0",
     "uuid": "^3.3.2"
