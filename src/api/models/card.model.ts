@@ -64,7 +64,7 @@ const cardSchema = new mongoose.Schema(
     designation: {
       type: String
     },
-    webiste: {
+    websitse: {
       type: String
     }
   },
