@@ -1,11 +1,13 @@
-export {};
 import { NextFunction, Request, Response, Router } from 'express';
+import { User } from 'api/models';
+import { startTimer, apiJson } from 'api/utils/Utils';
+
+export {};
 const mongoose = require('mongoose');
-const ObjectId = mongoose.Types.ObjectId;
+
+const { ObjectId } = mongoose.Types;
 const httpStatus = require('http-status');
 const { omit } = require('lodash');
-import { User, UserNote } from 'api/models';
-import { startTimer, apiJson } from 'api/utils/Utils';
 const { handler: errorHandler } = require('../middlewares/error');
 
 /**
@@ -95,43 +97,6 @@ exports.list = async (req: Request, res: Response, next: NextFunction) => {
     startTimer(req);
     const data = (await User.list(req)).transform(req);
     apiJson({ req, res, data, model: User });
-  } catch (e) {
-    next(e);
-  }
-};
-
-/**
- * Get user's notes.
- * NOTE: Any logged in user can get a list of notes of any user.
- * @public
- * @example GET https://localhost:3009/v1/users/USERID/notes
- */
-exports.listUserNotes = async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    startTimer(req);
-    const userId = req.params.userId;
-    req.query = { ...req.query, user: new ObjectId(userId) }; // append to query (by userId) to final query
-    const data = (await UserNote.list({ query: req.query })).transform(req);
-    apiJson({ req, res, data, model: UserNote });
-  } catch (e) {
-    next(e);
-  }
-};
-
-/**
- * Delete user note
- * @public
- */
-exports.deleteUserNote = async (req: Request, res: Response, next: NextFunction) => {
-  const { userId, noteId } = req.params;
-  const { _id } = req.route.meta.user;
-  const currentUserId = _id.toString();
-  if (userId !== currentUserId) {
-    return next(); // only logged in user can delete her own notes
-  }
-  try {
-    await UserNote.remove({ user: new ObjectId(userId), _id: new ObjectId(noteId) });
-    apiJson({ req, res, data: {} });
   } catch (e) {
     next(e);
   }

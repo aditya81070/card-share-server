@@ -34,7 +34,7 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
       minlength: 6,
-      maxlength: 128
+      maxlength: 128,
     },
     tempPassword: {
       type: String, // one-time temporary password (must delete after user logged in)
@@ -46,7 +46,8 @@ const userSchema = new mongoose.Schema(
       type: String,
       maxlength: 128,
       index: true,
-      trim: true
+      trim: true,
+      required: true
     },
     username: {
       type: String,
@@ -153,7 +154,9 @@ userSchema.statics = {
       let user;
 
       if (mongoose.Types.ObjectId.isValid(id)) {
-        user = await this.findById(id).exec();
+        user = await this.findById(id)
+          .populate('cardId')
+          .exec();
       }
       if (user) {
         return user;
