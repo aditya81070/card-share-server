@@ -1,7 +1,7 @@
 export {};
 const express = require('express');
 const validate = require('express-validation');
-const controller = require('../../controllers/user.controller');
+const controller = require('../../controllers/card.controller');
 const { authorize, ADMIN, LOGGED_USER } = require('../../middlewares/auth');
 const { listCards, createCard, replaceCard, updateCard } = require('../../validations/card.validation');
 
@@ -15,19 +15,19 @@ router.param('cardId', controller.load);
 router
   .route('/')
 
-  .get(authorize(ADMIN), validate(listCards), controller.list)
+  .get(authorize(), validate(listCards), controller.list)
 
-  .post(authorize(ADMIN), validate(createCard), controller.create);
+  .post(authorize(), validate(createCard), controller.create);
 
 router
   .route('/:cardId')
 
-  .get(authorize(LOGGED_USER), controller.get)
+  .get(authorize(), controller.get)
 
-  .put(authorize(LOGGED_USER), validate(replaceCard), controller.replace)
+  .put(authorize(), validate(replaceCard), controller.replace)
 
-  .patch(authorize(LOGGED_USER), validate(updateCard), controller.update)
+  .patch(authorize(), validate(updateCard), controller.update)
 
-  .delete(authorize(LOGGED_USER), controller.remove);
+  .delete(authorize(), controller.remove);
 
 module.exports = router;

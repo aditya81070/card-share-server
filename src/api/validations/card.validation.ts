@@ -2,6 +2,23 @@ import * as Joi from 'joi';
 
 export {};
 
+const cardObj = {
+  type: Joi.string(),
+  email: Joi.string().regex(/^\S+@\S+\.\S+$/),
+  name: Joi.string().max(128),
+  contact: Joi.string()
+    .min(10)
+    .max(10),
+  alternateContact: Joi.string()
+    .min(10)
+    .max(10),
+  addressOffice: Joi.string().min(10),
+  addressHome: Joi.string().min(10),
+  company: Joi.string(),
+  designation: Joi.string(),
+  website: Joi.string()
+};
+
 module.exports = {
   // GET /v1/cards
   listCards: {
@@ -10,63 +27,20 @@ module.exports = {
       perPage: Joi.number()
         .min(1)
         .max(100),
-      type: Joi.string(),
-      email: Joi.string().regex(/^\S+@\S+\.\S+$/),
-      name: Joi.string().max(128),
-      contact: Joi.string()
-        .min(10)
-        .max(10),
-      alternateContact: Joi.string()
-        .min(10)
-        .max(10),
-      addressOffice: Joi.string().min(10),
-      addressHome: Joi.string().min(10),
-      company: Joi.string(),
-      designation: Joi.string(),
-      website: Joi.string()
+      ...cardObj
     }
   },
 
   // POST /v1/cards
   createCard: {
-    body: {
-      type: Joi.string(),
-      email: Joi.string().regex(/^\S+@\S+\.\S+$/),
-      name: Joi.string().max(128),
-      contact: Joi.string()
-        .min(10)
-        .max(10),
-      alternateContact: Joi.string()
-        .min(10)
-        .max(10),
-      addressOffice: Joi.string().min(10),
-      addressHome: Joi.string().min(10),
-      company: Joi.string(),
-      designation: Joi.string(),
-      website: Joi.string()
-    }
+    body: cardObj
   },
 
   // PUT /v1/cards/:cardId
   replaceCard: {
-    body: {
-      type: Joi.string(),
-      email: Joi.string().regex(/^\S+@\S+\.\S+$/),
-      name: Joi.string().max(128),
-      contact: Joi.string()
-        .min(10)
-        .max(10),
-      alternateContact: Joi.string()
-        .min(10)
-        .max(10),
-      addressOffice: Joi.string().min(10),
-      addressHome: Joi.string().min(10),
-      company: Joi.string(),
-      designation: Joi.string(),
-      website: Joi.string()
-    },
+    body: cardObj,
     params: {
-      userId: Joi.string()
+      cardId: Joi.string()
         .regex(/^[a-fA-F0-9]{24}$/)
         .required()
     }
@@ -74,22 +48,7 @@ module.exports = {
 
   // PATCH /v1/cards/:cardId
   updateCard: {
-    body: {
-      type: Joi.string(),
-      email: Joi.string().regex(/^\S+@\S+\.\S+$/),
-      name: Joi.string().max(128),
-      contact: Joi.string()
-        .min(10)
-        .max(10),
-      alternateContact: Joi.string()
-        .min(10)
-        .max(10),
-      addressOffice: Joi.string().min(10),
-      addressHome: Joi.string().min(10),
-      company: Joi.string(),
-      designation: Joi.string(),
-      website: Joi.string()
-    },
+    body: cardObj,
     params: {
       cardId: Joi.string()
         .regex(/^[a-fA-F0-9]{24}$/)
