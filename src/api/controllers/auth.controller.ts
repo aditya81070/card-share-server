@@ -1,12 +1,13 @@
-export {};
 import { NextFunction, Request, Response, Router } from 'express';
-const httpStatus = require('http-status');
 import { User } from 'api/models';
-const RefreshToken = require('../models/refreshToken.model');
-const moment = require('moment-timezone');
 import { apiJson, randomString } from 'api/utils/Utils';
-import { sendEmail, welcomeEmail, forgotPasswordEmail, slackWebhook } from 'api/utils/MsgUtils';
-const { JWT_EXPIRATION_MINUTES, slackEnabled, emailEnabled } = require('../../config/vars');
+import { sendEmail, welcomeEmail, forgotPasswordEmail } from 'api/utils/MsgUtils';
+
+export {};
+const httpStatus = require('http-status');
+const moment = require('moment-timezone');
+const RefreshToken = require('../models/refreshToken.model');
+const { JWT_EXPIRATION_MINUTES, emailEnabled } = require('../../config/vars');
 
 /**
  * Returns a formated object with tokens
@@ -35,9 +36,6 @@ exports.register = async (req: Request, res: Response, next: NextFunction) => {
     const token = generateTokenResponse(user, user.token());
     res.status(httpStatus.CREATED);
     const data = { token, user: userTransformed };
-    if (slackEnabled) {
-      slackWebhook(`New User: ${user.email}`); // notify when new user registered
-    }
     if (emailEnabled) {
       // for testing: it can only email to "authorized recipients" in Mailgun Account Settings.
       // sendEmail(welcomeEmail({ name: user.name, email: user.email }));

@@ -11,13 +11,9 @@ require('dotenv-safe').load({
 module.exports = {
   env: process.env.NODE_ENV,
   port: process.env.PORT,
-  socketEnabled: ['1', 'true', 'yes'].indexOf(process.env.SOCKET_ENABLED || '') >= 0,
-  slackEnabled: process.env.SLACK_WEBHOOK_URL ? true : false,
-  emailEnabled: process.env.EMAIL_MAILGUN_API_KEY ? true : false,
+  emailEnabled: !!process.env.EMAIL_MAILGUN_API_KEY,
   JWT_SECRET: process.env.JWT_SECRET,
   JWT_EXPIRATION_MINUTES: process.env.JWT_EXPIRATION_MINUTES,
-  UPLOAD_LIMIT: 5, // MB
-  SLACK_WEBHOOK_URL: process.env.SLACK_WEBHOOK_URL,
   EMAIL_TEMPLATE_BASE: './src/templates/emails/',
   EMAIL_FROM_SUPPORT: process.env.EMAIL_FROM_SUPPORT,
   EMAIL_MAILGUN_API_KEY: process.env.EMAIL_MAILGUN_API_KEY,
