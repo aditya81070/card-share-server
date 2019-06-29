@@ -1,7 +1,7 @@
 const fs = require('fs');
 
 // configure for emailing
-const { EMAIL_MAILGUN_API_KEY, EMAIL_FROM_SUPPORT, EMAIL_MAILGUN_DOMAIN, EMAIL_TEMPLATE_BASE } = require('config/vars');
+const { EMAIL_FROM_SUPPORT, EMAIL_TEMPLATE_BASE } = require('config/vars');
 const handlebars = require('handlebars');
 
 // load template file & inject data => return content with injected data.
@@ -37,34 +37,24 @@ export function forgotPasswordEmail({ name, email, tempPass }: { name: string; e
 
 // --------- Nodemailer and Mailgun setup --------- //
 const nodemailer = require('nodemailer');
-const mailgunTransport = require('nodemailer-mailgun-transport');
 
-let emailClient: any = null;
-if (EMAIL_MAILGUN_API_KEY) {
-  // Configure transport options
-  const mailgunOptions = {
+export async function sendEmail(data: any) {
+  const transporter = nodemailer.createTransport({
+    service: 'gmail',
     auth: {
-      api_key: EMAIL_MAILGUN_API_KEY, // process.env.MAILGUN_ACTIVE_API_KEY,
-      domain: EMAIL_MAILGUN_DOMAIN // process.env.MAILGUN_DOMAIN,
+      user: 'amrits.test@gmail.com',
+      pass: 'Test@123456'
     }
-  };
-  const transport = mailgunTransport(mailgunOptions);
-  emailClient = nodemailer.createTransport(transport);
-}
-
-export function sendEmail(data: any) {
-  if (!emailClient) {
-    return;
-  }
-  return new Promise((resolve, reject) => {
-    emailClient
-      ? emailClient.sendMail(data, (err: any, info: any) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(info);
-        }
-      })
-      : '';
   });
+
+  // send mail with defined transport object
+  await transporter.sendMail({
+    from: data.from, // sender address
+    to: data.to, // list of receivers
+    subject: data.subject, // Subject line
+    text: data.text, // plain text body
+    html: data.html // html body
+  });
+
+  return data;
 }

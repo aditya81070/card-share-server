@@ -16,8 +16,6 @@ module.exports = {
   JWT_EXPIRATION_MINUTES: process.env.JWT_EXPIRATION_MINUTES,
   EMAIL_TEMPLATE_BASE: './src/templates/emails/',
   EMAIL_FROM_SUPPORT: process.env.EMAIL_FROM_SUPPORT,
-  EMAIL_MAILGUN_API_KEY: process.env.EMAIL_MAILGUN_API_KEY,
-  EMAIL_MAILGUN_DOMAIN: process.env.EMAIL_MAILGUN_DOMAIN,
   mongo: {
     uri: process.env.NODE_ENV === 'test' ? process.env.MONGO_URI_TESTS : process.env.MONGO_URI
   },
