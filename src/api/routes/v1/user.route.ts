@@ -32,4 +32,16 @@ router
 
   .delete(authorize(LOGGED_USER), controller.remove);
 
+router
+  .route('/card/:userId')
+
+  .post(authorize(LOGGED_USER), controller.addCard)
+
+  .delete(authorize(LOGGED_USER), controller.removeCard);
+
+router
+  .route('/card/share/:userId')
+
+  .post(authorize(LOGGED_USER), controller.shareCard)
+
 module.exports = router;

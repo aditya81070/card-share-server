@@ -3,7 +3,9 @@ import { User } from 'api/models';
 import { startTimer, apiJson } from 'api/utils/Utils';
 
 export {};
+
 const mongoose = require('mongoose');
+const _ = require('lodash');
 
 const { ObjectId } = mongoose.Types;
 const httpStatus = require('http-status');
@@ -21,7 +23,14 @@ exports.load = async (req: Request, res: Response, next: NextFunction, id: any) 
   }
 };
 
-exports.get = (req: Request, res: Response) => res.json(req.route.meta.user.transform());
+exports.get = async (req: Request, res: Response) => {
+  try {
+    const user = await User.get(req.params.userId);
+    res.json(user.transform());
+  } catch (error) {
+    return errorHandler(error, req, res);
+  }
+};
 
 exports.loggedIn = (req: Request, res: Response) => res.json(req.route.meta.user.transform());
 
@@ -78,5 +87,47 @@ exports.remove = (req: Request, res: Response, next: NextFunction) => {
   user
     .remove()
     .then(() => res.status(httpStatus.NO_CONTENT).end())
+    .catch((e: any) => next(e));
+};
+
+exports.addCard = async (req: Request, res: Response, next: NextFunction) => {
+  const addUserDetails = await User.findOne({ username: req.body.username });
+  await User.updateOne({ _id: req.params.userId }, { $addToSet: { incomingConnections: addUserDetails._id } })
+    .then(async (savedUser: any) => {
+      if (savedUser.ok === 1) {
+        await User.updateOne(
+          { username: req.body.username },
+          { $addToSet: { outgoingConnections: req.params.userId } }
+        );
+        res.json(await User.get(req.params.userId));
+      }
+    })
+    .catch((e: any) => next(e));
+};
+
+exports.removeCard = async (req: Request, res: Response, next: NextFunction) => {
+  const deleteUserDetails = await User.findOne({ username: req.body.username });
+  await User.updateOne({ _id: req.params.userId }, { $pull: { incomingConnections: deleteUserDetails._id } })
+    .then(async (deletedUser: any) => {
+      if (deletedUser.ok === 1) {
+        await User.updateOne({ username: req.body.username }, { $pull: { outgoingConnections: req.params.userId } });
+        res.json(await User.get(req.params.userId));
+      }
+    })
+    .catch((e: any) => next(e));
+};
+
+exports.shareCard = async (req: Request, res: Response, next: NextFunction) => {
+  const addUserDetails = await User.findOne({ username: req.body.username });
+  await User.updateOne({ _id: addUserDetails._id }, { $addToSet: { incomingConnections: req.params.userId } })
+    .then(async (savedUser: any) => {
+      if (savedUser.ok === 1) {
+        await User.updateOne(
+          { _id: req.params.userId },
+          { $addToSet: { outgoingConnections: addUserDetails._id } }
+        );
+        res.json(await User.get(req.params.userId));
+      }
+    })
     .catch((e: any) => next(e));
 };

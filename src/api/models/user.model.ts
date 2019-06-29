@@ -3,6 +3,7 @@ import { transformData, listData } from 'api/utils/ModelUtils';
 
 export {};
 const mongoose = require('mongoose');
+const _ = require('lodash');
 const httpStatus = require('http-status');
 const bcrypt = require('bcryptjs');
 const moment = require('moment-timezone');
@@ -34,7 +35,7 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
       minlength: 6,
-      maxlength: 128,
+      maxlength: 128
     },
     tempPassword: {
       type: String, // one-time temporary password (must delete after user logged in)
@@ -57,12 +58,6 @@ const userSchema = new mongoose.Schema(
       lowercase: true,
       unique: true
     },
-    contact: {
-      type: String,
-      minlength: 10,
-      maxlength: 10,
-      trim: true
-    },
     services: {
       facebook: String,
       google: String
@@ -76,17 +71,63 @@ const userSchema = new mongoose.Schema(
       type: String,
       trim: true
     },
-    cardId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Card',
-      default: null
-    }
+    variant: {
+      type: String,
+      default: 'card1'
+    },
+    contact: {
+      type: String,
+      minlength: 10,
+      maxlength: 10,
+      trim: true
+    },
+    alternateContact: {
+      type: String,
+      minlength: 10,
+      maxlength: 10,
+      trim: true
+    },
+    addressOffice: {
+      type: 'String'
+    },
+    addressHome: {
+      type: 'String'
+    },
+    company: {
+      type: String
+    },
+    designation: {
+      type: String
+    },
+    website: {
+      type: String
+    },
+    incomingConnections: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+    outgoingConnections: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }]
   },
   {
     timestamps: true
   }
 );
-const ALLOWED_FIELDS = ['id', 'name', 'email', 'username', 'contact', 'picture', 'role', 'cardId', 'createdAt'];
+const ALLOWED_FIELDS = [
+  'id',
+  'name',
+  'email',
+  'username',
+  'contact',
+  'alternateContact',
+  'variant',
+  'picture',
+  'role',
+  'addressOffice',
+  'addressHome',
+  'company',
+  'designation',
+  'website',
+  'incomingConnections',
+  'outgoingConnections',
+  'createdAt'
+];
 
 /**
  * Add your
@@ -122,14 +163,14 @@ userSchema.method({
   },
 
   token() {
-    const playload = {
+    const payload = {
       exp: moment()
         .add(JWT_EXPIRATION_MINUTES, 'minutes')
         .unix(),
       iat: moment().unix(),
       sub: this._id
     };
-    return jwt.encode(playload, JWT_SECRET);
+    return jwt.encode(payload, JWT_SECRET);
   },
 
   async passwordMatches(password: string) {
@@ -155,7 +196,14 @@ userSchema.statics = {
 
       if (mongoose.Types.ObjectId.isValid(id)) {
         user = await this.findById(id)
-          .populate('cardId')
+          .populate({
+            path: 'incomingConnections',
+            model: 'User'
+          })
+          .populate({
+            path: 'outgoingConnections',
+            model: 'User'
+          })
           .exec();
       }
       if (user) {

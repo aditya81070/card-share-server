@@ -12,7 +12,18 @@ const userObj = {
     .max(30),
   contact: Joi.string()
     .min(10)
-    .max(10)
+    .max(10),
+  variant: Joi.string(),
+  alternateContact: Joi.string()
+    .min(10)
+    .max(10),
+  addressOffice: Joi.string(),
+  addressHome: Joi.string(),
+  company: Joi.string(),
+  designation: Joi.string(),
+  website: Joi.string(),
+  incomingConnections: Joi.array().items(Joi.string().regex(/^[a-fA-F0-9]{24}$/)),
+  outgoingConnections: Joi.array().items(Joi.string().regex(/^[a-fA-F0-9]{24}$/))
 };
 
 module.exports = {
