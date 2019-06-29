@@ -3,7 +3,7 @@ const express = require('express');
 const validate = require('express-validation');
 const controller = require('../../controllers/auth.controller');
 const oAuthLogin = require('../../middlewares/auth').oAuth;
-const { login, register, oAuth, refresh, forgotPassword } = require('../../validations/auth.validation');
+const { login, register, oAuth, refresh, forgotPassword, resetPassword } = require('../../validations/auth.validation');
 
 const router = express.Router();
 
@@ -18,5 +18,7 @@ router.route('/facebook').post(validate(oAuth), oAuthLogin('facebook'), controll
 router.route('/google').post(validate(oAuth), oAuthLogin('google'), controller.oAuth);
 
 router.route('/forgot-password').post(validate(forgotPassword), controller.forgotPassword);
+
+router.route('/reset-password').post(validate(resetPassword), controller.resetPassword);
 
 module.exports = router;

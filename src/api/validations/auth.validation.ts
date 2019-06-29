@@ -62,5 +62,16 @@ module.exports = {
         .max(30),
       email: Joi.string().email()
     }
+  },
+
+  // POST /v1/auth/reset-password
+  resetPassword: {
+    body: {
+      id: Joi.string()
+        .regex(/^[a-fA-F0-9]{24}$/)
+        .required(),
+      oldPassword: Joi.string(),
+      password: Joi.string()
+    }
   }
 };

@@ -104,8 +104,7 @@ exports.refresh = async (req: Request, res: Response, next: NextFunction) => {
  */
 exports.forgotPassword = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { email: reqEmail } = req.body;
-    const user = await User.findOne({ email: reqEmail });
+    const user = await User.findOne({ email: req.body.email });
     if (!user) {
       // RETURN A GENERIC ERROR - DON'T EXPOSE the real reason (user not found) for security.
       return next({ message: 'Invalid request' });
@@ -113,10 +112,28 @@ exports.forgotPassword = async (req: Request, res: Response, next: NextFunction)
     // user found => generate temp password, then email it to user:
     const { name, email } = user;
     const tempPass = randomString(10, 'abcdefghijklmnopqrstuvwxyz0123456789');
+    user.password = tempPass;
     user.tempPassword = tempPass;
     await user.save();
     sendEmail(forgotPasswordEmail({ name, email, tempPass }));
 
+    return apiJson({ req, res, data: { status: 'OK' } });
+  } catch (error) {
+    return next(error);
+  }
+};
+
+exports.resetPassword = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { oldPassword, password, id } = req.body;
+    const user = await User.findOne({ _id: id });
+    if (!user) {
+      return next({ message: 'Invalid request' });
+    }
+    if (user && (await user.passwordMatches(oldPassword))) {
+      user.password = password;
+    }
+    await user.save();
     return apiJson({ req, res, data: { status: 'OK' } });
   } catch (error) {
     return next(error);
